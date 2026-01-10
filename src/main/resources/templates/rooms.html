@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Lista Sal</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        .btn { background-color: #4CAF50; color: white; padding: 10px; text-decoration: none; }
+    </style>
+</head>
+<body>
+<h1>Dostępne Sale</h1>
+
+<table>
+    <thead>
+    <tr>
+        <th>Nazwa</th>
+        <th>Pojemność</th>
+        <th>Opis</th>
+    </tr>
+    </thead>
+    <tbody>
+    {#for room in rooms}
+        <tr>
+            <td>{room.name}</td>
+            <td>{room.capacity}</td>
+            <td>{room.description ?: 'Brak opisu'}</td>
+        </tr>
+    {/for}
+    </tbody>
+</table>
+
+<br>
+<a href="/rooms/form" class="btn">Dodaj nową salę</a>
+</body>
+</html>
