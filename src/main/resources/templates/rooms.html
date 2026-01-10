@@ -20,20 +20,33 @@
         <th>Nazwa</th>
         <th>Pojemność</th>
         <th>Opis</th>
-    </tr>
+        <th>Akcje</th> </tr>
     </thead>
     <tbody>
     {#for room in rooms}
         <tr>
             <td>{room.name}</td>
             <td>{room.capacity}</td>
-            <td>{room.description ?: 'Brak opisu'}</td>
+            <td>{room.description ?: '-'}</td>
+            <td>
+                <a href="/rooms/edit/{room.id}"
+                   style="background-color: #2196F3; color: white; text-decoration: none; padding: 5px 10px; margin-right: 5px; display: inline-block; font-size: 13.33px; font-family: Arial;">
+                    Edytuj
+                </a>
+
+                <form action="/rooms/delete/{room.id}" method="POST" style="display:inline;">
+                    <button type="submit"
+                            style="background-color: #ff4444; color: white; border: none; padding: 5px 10px; cursor: pointer;">
+                        Usuń
+                    </button>
+                </form>
+            </td>
         </tr>
     {/for}
     </tbody>
 </table>
 
 <br>
-<a href="/rooms/form" class="btn">Dodaj nową salę</a>
+<a href="/rooms/new" class="btn">Dodaj nową salę</a>
 </body>
 </html>

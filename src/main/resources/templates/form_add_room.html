@@ -16,18 +16,18 @@
 </head>
 <body>
 
-<h2>Add New Room</h2>
+<h2>Dodaj nowy pokój</h2>
 
 {#if error}
     <div class="alert">
-        <strong>Error!</strong> {error}
+        <strong>Błąd!</strong> {error}
     </div>
 {/if}
 
 <form action="/rooms/save" method="POST">
     <div class="form-group">
-        <label for="name">Room Name</label>
-        <input type="text" id="name" name="name" placeholder="e.g. Conference Room A" required>
+        <label for="name">Nazwa pokoju</label>
+        <input type="text" id="name" name="name" placeholder="np. czerwony pokój" required>
     </div>
 
     <div class="form-group">
@@ -36,14 +36,14 @@
     </div>
 
     <div class="form-group">
-        <label for="description">Description (Optional)</label>
+        <label for="description">Opis (Opcjonalnie)</label>
         <textarea id="description" name="description" rows="3"></textarea>
     </div>
 
-    <button type="submit" class="btn-submit">Save Room</button>
+    <button type="submit" class="btn-submit">Zapisz pokój</button>
 </form>
 
-<a href="/rooms" class="btn-back">← Back to List</a>
+<a href="/rooms" class="btn-back">← Wróc do listy</a>
 
 </body>
 </html>

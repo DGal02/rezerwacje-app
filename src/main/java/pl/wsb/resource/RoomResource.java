@@ -23,6 +23,9 @@ public class RoomResource {
     Template form_add_room;
 
     @Inject
+    Template form_edit_room;
+
+    @Inject
     RoomService roomService;
 
     @GET
@@ -73,5 +76,46 @@ public class RoomResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAllJson() {
         return Response.ok(roomService.getAllRooms()).build();
+    }
+
+    @POST
+    @Path("/delete/{id}")
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    public Response delete(@PathParam("id") Long id) {
+        roomService.deleteRoom(id);
+        return Response.seeOther(URI.create("/rooms")).build();
+    }
+
+    @GET
+    @Path("/edit/{id}")
+    @Produces(MediaType.TEXT_HTML)
+    public TemplateInstance showEditForm(@PathParam("id") Long id) {
+        Room room = roomService.getRoom(id);
+        if (room == null) {
+            return rooms.data("rooms", roomService.getAllRooms());
+        }
+        return form_edit_room.data("room", room);
+    }
+
+    @POST
+    @Path("/update/{id}")
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Transactional
+    public Response update(@PathParam("id") Long id,
+                           @FormParam("name") String name,
+                           @FormParam("capacity") int capacity,
+                           @FormParam("description") String description) {
+
+        Room updatedData = new Room(name, capacity);
+        updatedData.description = description;
+        updatedData.id = id;
+
+        try {
+            roomService.updateRoom(id, updatedData);
+            return Response.seeOther(URI.create("/rooms")).build();
+
+        } catch (IllegalArgumentException e) {
+            return Response.ok(form_edit_room.data("room", updatedData).data("error", e.getMessage())).build();
+        }
     }
 }

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edytuj Salę</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; max-width: 600px; margin: auto; }
+        label { display: block; margin-top: 10px; font-weight: bold; }
+        input, textarea { width: 100%; padding: 8px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        .btn-save { margin-top: 20px; background-color: #2196F3; color: white; padding: 10px 20px; border: none; cursor: pointer; text-decoration: none; display: inline-block; }
+        .btn-cancel { margin-top: 20px; background-color: #999; color: white; padding: 10px 20px; border: none; text-decoration: none; display: inline-block; margin-left: 10px; }
+    </style>
+</head>
+<body>
+
+<h2>Edytuj Salę</h2>
+
+{#if error}
+    <div style="padding: 10px; background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; border-radius: 4px; margin-bottom: 20px;">
+        <strong>Błąd!</strong> {error}
+    </div>
+{/if}
+
+<form action="/rooms/update/{room.id}" method="POST">
+
+    <label for="name">Nazwa sali:</label>
+    <input type="text" id="name" name="name" value="{room.name}" required>
+
+    <label for="capacity">Pojemność:</label>
+    <input type="number" id="capacity" name="capacity" min="1" value="{room.capacity}" required>
+
+    <label for="description">Opis:</label>
+    <textarea id="description" name="description" rows="3">{room.description ?: ''}</textarea>
+
+    <button type="submit" class="btn-save">Zapisz zmiany</button>
+    <a href="/rooms" class="btn-cancel">Anuluj</a>
+</form>
+
+</body>
+</html>
