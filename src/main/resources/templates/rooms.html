@@ -1,52 +1,43 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>Lista Sal</title>
-    <style>
-        body { font-family: sans-serif; padding: 20px; }
-        table { width: 100%; border-collapse: collapse; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-        th { background-color: #f2f2f2; }
-        .btn { background-color: #4CAF50; color: white; padding: 10px; text-decoration: none; }
-    </style>
-</head>
-<body>
-<h1>Dostępne Sale</h1>
+{#include layout}
+    {#body}
 
-<table>
-    <thead>
-    <tr>
-        <th>Nazwa</th>
-        <th>Pojemność</th>
-        <th>Opis</th>
-        <th>Akcje</th> </tr>
-    </thead>
-    <tbody>
-    {#for room in rooms}
-        <tr>
-            <td>{room.name}</td>
-            <td>{room.capacity}</td>
-            <td>{room.description ?: '-'}</td>
-            <td>
-                <a href="/rooms/edit/{room.id}"
-                   style="background-color: #2196F3; color: white; text-decoration: none; padding: 5px 10px; margin-right: 5px; display: inline-block; font-size: 13.33px; font-family: Arial;">
-                    Edytuj
-                </a>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h2 style="margin: 0; color: #2c3e50;">Dostępne Sale</h2>
+            <a href="/rooms/new" class="btn btn-primary">+ Dodaj nową salę</a>
+        </div>
 
-                <form action="/rooms/delete/{room.id}" method="POST" style="display:inline;">
-                    <button type="submit"
-                            style="background-color: #ff4444; color: white; border: none; padding: 5px 10px; cursor: pointer;">
-                        Usuń
-                    </button>
-                </form>
-            </td>
-        </tr>
-    {/for}
-    </tbody>
-</table>
+        <table>
+            <thead>
+            <tr>
+                <th>Nazwa</th>
+                <th>Pojemność</th>
+                <th>Opis</th>
+                <th style="width: 160px;">Akcje</th>
+            </tr>
+            </thead>
+            <tbody>
+            {#for room in rooms}
+                <tr>
+                    <td><strong>{room.name}</strong></td>
+                    <td>{room.capacity} osób</td>
+                    <td style="color: #7f8c8d;">{room.description ?: '-'}</td>
+                    <td>
+                        <a href="/rooms/edit/{room.id}" class="btn btn-primary" style="padding: 5px 10px; font-size: 13px;">Edytuj</a>
 
-<br>
-<a href="/rooms/new" class="btn">Dodaj nową salę</a>
-</body>
-</html>
+                        <form action="/rooms/delete/{room.id}" method="POST" style="display:inline;">
+                            <button type="submit" class="btn btn-danger" style="padding: 5px 10px; font-size: 13px; margin-left: 5px;">Usuń</button>
+                        </form>
+                    </td>
+                </tr>
+            {/for}
+            </tbody>
+        </table>
+
+        {#if rooms.size == 0}
+            <div style="text-align: center; padding: 40px; color: #95a5a6;">
+                Brak sal w systemie. Dodaj pierwszą!
+            </div>
+        {/if}
+
+    {/body}
+{/include}
