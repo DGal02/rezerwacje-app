@@ -2,6 +2,8 @@ package pl.wsb.resource;
 
 import io.quarkus.qute.Template;
 import io.quarkus.qute.TemplateInstance;
+import io.quarkus.security.Authenticated;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
@@ -15,6 +17,7 @@ import java.net.URI;
 @Path("/rooms")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
+@Authenticated
 public class RoomResource {
     @Inject
     Template rooms;
@@ -81,6 +84,7 @@ public class RoomResource {
     @POST
     @Path("/delete/{id}")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @RolesAllowed("admin")
     public Response delete(@PathParam("id") Long id) {
         roomService.deleteRoom(id);
         return Response.seeOther(URI.create("/rooms")).build();
