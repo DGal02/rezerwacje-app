@@ -1,13 +1,13 @@
 package pl.wsb.entity;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 
 @Entity
 public class Room extends PanacheEntity {
+
     @NotBlank(message = "Nazwa sali jest wymagana")
     @Column(unique = true)
     public String name;
@@ -16,6 +16,10 @@ public class Room extends PanacheEntity {
     public int capacity;
 
     public String description;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "input_user_id", nullable = false)
+    public User inputUser;
 
     public Room() {}
 

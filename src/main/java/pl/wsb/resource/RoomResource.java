@@ -3,6 +3,7 @@ package pl.wsb.resource;
 import io.quarkus.qute.Template;
 import io.quarkus.qute.TemplateInstance;
 import io.quarkus.security.Authenticated;
+import io.quarkus.security.identity.SecurityIdentity;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -10,6 +11,7 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import pl.wsb.entity.Room;
+import pl.wsb.repository.UserRepository;
 import pl.wsb.service.RoomService;
 
 import java.net.URI;
@@ -30,6 +32,12 @@ public class RoomResource {
 
     @Inject
     RoomService roomService;
+
+    @Inject
+    SecurityIdentity identity;
+
+    @Inject
+    UserRepository userRepository;
 
     @GET
     @Produces(MediaType.TEXT_HTML)
@@ -53,6 +61,8 @@ public class RoomResource {
         try {
             Room newRoom = new Room(name, capacity);
             newRoom.description = description;
+            String username = identity.getPrincipal().getName();
+            newRoom.inputUser = userRepository.findByUsername(username);
             roomService.addRoom(newRoom);
 
             return Response.seeOther(URI.create("/rooms")).build();
