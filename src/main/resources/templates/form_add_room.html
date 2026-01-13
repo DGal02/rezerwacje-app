@@ -1,49 +1,38 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Add New Room</title>
-    <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px; max-width: 500px; margin: auto; }
-        .form-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; font-weight: bold; }
-        input, textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
-        .btn-submit { background-color: #28a745; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; width: 100%; }
-        .btn-submit:hover { background-color: #218838; }
-        .btn-back { display: block; text-align: center; margin-top: 15px; color: #6c757d; text-decoration: none; }
-        .alert { padding: 10px; background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; border-radius: 4px; margin-bottom: 20px; }
-    </style>
-</head>
-<body>
+{#include layout}
+    {#body}
 
-<h2>Dodaj nowy pokój</h2>
+        <h2 style="margin-top: 0; color: #2c3e50;">Dodaj Nową Salę</h2>
+        <p style="color: #7f8c8d; margin-bottom: 25px;">Wypełnij poniższy formularz, aby utworzyć nową salę.</p>
 
-{#if error}
-    <div class="alert">
-        <strong>Błąd!</strong> {error}
-    </div>
-{/if}
+        {#if error}
+            <div style="background-color: #fadbd8; color: #c0392b; padding: 15px; border-radius: 4px; margin-bottom: 20px; border: 1px solid #f5b7b1;">
+                <strong>Błąd:</strong> {error}
+            </div>
+        {/if}
 
-<form action="/rooms/save" method="POST">
-    <div class="form-group">
-        <label for="name">Nazwa pokoju</label>
-        <input type="text" id="name" name="name" placeholder="np. czerwony pokój" required>
-    </div>
+        <form action="/rooms/save" method="POST">
 
-    <div class="form-group">
-        <label for="capacity">Capacity</label>
-        <input type="number" id="capacity" name="capacity" min="1" value="5" required>
-    </div>
+            <div class="form-group">
+                <label>Nazwa sali</label>
+                <input type="text" name="name" value="{room.name ?: ''}" placeholder="np. Sala Konferencyjna A" required>
+            </div>
 
-    <div class="form-group">
-        <label for="description">Opis (Opcjonalnie)</label>
-        <textarea id="description" name="description" rows="3"></textarea>
-    </div>
+            <div class="form-group">
+                <label>Pojemność (liczba osób)</label>
+                <input type="number" name="capacity" value="{room.capacity ?: ''}" min="1" placeholder="np. 50" required>
+            </div>
 
-    <button type="submit" class="btn-submit">Zapisz pokój</button>
-</form>
+            <div class="form-group">
+                <label>Opis (opcjonalnie)</label>
+                <textarea name="description" rows="5" placeholder="Opisz wyposażenie sali, np. rzutnik, klimatyzacja...">{room.description ?: ''}</textarea>
+            </div>
 
-<a href="/rooms" class="btn-back">← Wróc do listy</a>
+            <div style="margin-top: 30px; display: flex; gap: 10px;">
+                <button type="submit" class="btn btn-primary">Zapisz Salę</button>
+                <a href="/rooms" class="btn btn-secondary">Anuluj</a>
+            </div>
 
-</body>
-</html>
+        </form>
+
+    {/body}
+{/include}

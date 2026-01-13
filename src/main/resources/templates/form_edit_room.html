@@ -1,40 +1,38 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Edytuj Salę</title>
-    <style>
-        body { font-family: sans-serif; padding: 20px; max-width: 600px; margin: auto; }
-        label { display: block; margin-top: 10px; font-weight: bold; }
-        input, textarea { width: 100%; padding: 8px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
-        .btn-save { margin-top: 20px; background-color: #2196F3; color: white; padding: 10px 20px; border: none; cursor: pointer; text-decoration: none; display: inline-block; }
-        .btn-cancel { margin-top: 20px; background-color: #999; color: white; padding: 10px 20px; border: none; text-decoration: none; display: inline-block; margin-left: 10px; }
-    </style>
-</head>
-<body>
+{#include layout}
+    {#body}
 
-<h2>Edytuj Salę</h2>
+        <h2 style="margin-top: 0; color: #2c3e50;">Edycja Sali</h2>
+        <p style="color: #7f8c8d; margin-bottom: 25px;">Zmień dane istniejącej sali.</p>
 
-{#if error}
-    <div style="padding: 10px; background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; border-radius: 4px; margin-bottom: 20px;">
-        <strong>Błąd!</strong> {error}
-    </div>
-{/if}
+        {#if error}
+            <div style="background-color: #fadbd8; color: #c0392b; padding: 15px; border-radius: 4px; margin-bottom: 20px; border: 1px solid #f5b7b1;">
+                <strong>Błąd:</strong> {error}
+            </div>
+        {/if}
 
-<form action="/rooms/update/{room.id}" method="POST">
+        <form action="/rooms/update/{room.id}" method="POST">
 
-    <label for="name">Nazwa sali:</label>
-    <input type="text" id="name" name="name" value="{room.name}" required>
+            <div class="form-group">
+                <label>Nazwa sali</label>
+                <input type="text" name="name" value="{room.name}" required>
+            </div>
 
-    <label for="capacity">Pojemność:</label>
-    <input type="number" id="capacity" name="capacity" min="1" value="{room.capacity}" required>
+            <div class="form-group">
+                <label>Pojemność</label>
+                <input type="number" name="capacity" value="{room.capacity}" min="1" required>
+            </div>
 
-    <label for="description">Opis:</label>
-    <textarea id="description" name="description" rows="3">{room.description ?: ''}</textarea>
+            <div class="form-group">
+                <label>Opis</label>
+                <textarea name="description" rows="5">{room.description ?: ''}</textarea>
+            </div>
 
-    <button type="submit" class="btn-save">Zapisz zmiany</button>
-    <a href="/rooms" class="btn-cancel">Anuluj</a>
-</form>
+            <div style="margin-top: 30px; display: flex; gap: 10px;">
+                <button type="submit" class="btn btn-primary">Zapisz Zmiany</button>
+                <a href="/rooms" class="btn btn-secondary">Anuluj</a>
+            </div>
 
-</body>
-</html>
+        </form>
+
+    {/body}
+{/include}

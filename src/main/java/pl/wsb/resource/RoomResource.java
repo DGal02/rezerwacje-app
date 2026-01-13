@@ -98,7 +98,10 @@ public class RoomResource {
         if (room == null) {
             return rooms.data("rooms", roomService.getAllRooms());
         }
-        return form_edit_room.data("room", room);
+
+        return form_edit_room
+                .data("room", room)
+                .data("error", null);
     }
 
     @POST
