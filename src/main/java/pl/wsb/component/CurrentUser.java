@@ -18,6 +18,10 @@ public class CurrentUser {
         return identity.getPrincipal().getName();
     }
 
+    public boolean isAdmin() {
+        return identity.hasRole("admin");
+    }
+
     public boolean isLoggedIn() {
         return !identity.isAnonymous();
     }

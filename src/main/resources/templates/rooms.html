@@ -24,9 +24,11 @@
                     <td>
                         <a href="/rooms/edit/{room.id}" class="btn btn-primary" style="padding: 5px 10px; font-size: 13px;">Edytuj</a>
 
-                        <form action="/rooms/delete/{room.id}" method="POST" style="display:inline;">
-                            <button type="submit" class="btn btn-danger" style="padding: 5px 10px; font-size: 13px; margin-left: 5px;">Usuń</button>
-                        </form>
+                        {#if inject:currentUser.admin}
+                            <form action="/rooms/delete/{room.id}" method="POST" style="display:inline;">
+                                <button type="submit" class="btn btn-danger" style="padding: 5px 10px; font-size: 13px; margin-left: 5px;">Usuń</button>
+                            </form>
+                        {/if}
                     </td>
                 </tr>
             {/for}
