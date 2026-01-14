@@ -62,7 +62,7 @@ public class ReservationService {
         res.startDate = start;
         res.endDate = end;
 
-        res.persist();
+        reservationRepository.persist(res);
     }
 
     @Transactional
