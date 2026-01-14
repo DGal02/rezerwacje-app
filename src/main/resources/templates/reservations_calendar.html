@@ -9,6 +9,12 @@
             <a href="/rooms" class="btn btn-secondary">← Powrót do listy sal</a>
         </div>
 
+        {#if error}
+            <div style="background-color: #e74c3c; color: white; padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center; font-weight: bold; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">
+                {error}
+            </div>
+        {/if}
+
         <div style="background-color: #ecf0f1; padding: 20px; border-radius: 8px; margin-bottom: 30px; border: 1px solid #bdc3c7;">
             <h3 style="margin-top: 0; font-size: 16px;">Zarezerwuj termin</h3>
 
@@ -63,7 +69,9 @@
                         <td style="padding: 15px; border-radius: 0 4px 4px 0;">
                             {#if inject:currentUser.admin || res.inputUser.username == inject:currentUser.name}
                                 <form action="/reservations/delete/{res.id}" method="POST">
-                                    <button type="submit" class="btn btn-danger" style="font-size: 12px; padding: 5px 10px;">Odwołaj</button>
+                                    <button type="submit" class="btn btn-danger"
+                                            style="font-size: 12px; padding: 5px 10px;">Odwołaj
+                                    </button>
                                 </form>
                             {#else}
                                 <span style="color: #bdc3c7; font-size: 12px;">Brak uprawnień</span>

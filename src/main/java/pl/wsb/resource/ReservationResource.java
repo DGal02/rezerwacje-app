@@ -5,98 +5,76 @@ import io.quarkus.qute.TemplateInstance;
 import io.quarkus.security.Authenticated;
 import io.quarkus.security.identity.SecurityIdentity;
 import jakarta.inject.Inject;
-import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import pl.wsb.entity.Reservation;
 import pl.wsb.entity.Room;
-import pl.wsb.entity.User;
-import pl.wsb.repository.UserRepository;
+import pl.wsb.service.ReservationService;
 
 import java.net.URI;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Path("/reservations")
 @Authenticated
 public class ReservationResource {
 
-    @Inject
-    Template reservations_calendar;
-
-    @Inject
-    SecurityIdentity identity;
-
-    @Inject
-    UserRepository userRepository;
+    @Inject Template reservations_calendar;
+    @Inject SecurityIdentity identity;
+    @Inject ReservationService reservationService;
 
     @GET
     @Path("/{roomId}")
     @Produces(MediaType.TEXT_HTML)
-    public TemplateInstance calendar(@PathParam("roomId") Long roomId) {
+    public TemplateInstance calendar(@PathParam("roomId") Long roomId,
+                                     @QueryParam("error") String error) {
         Room room = Room.findById(roomId);
-        if (room == null) {
-            throw new NotFoundException("Sala nie istnieje");
-        }
-
-        List<Reservation> roomReservations = Reservation.listByRoom(roomId);
+        if (room == null) throw new NotFoundException();
 
         return reservations_calendar
                 .data("room", room)
-                .data("reservations", roomReservations);
+                .data("reservations", reservationService.getReservationsByRoom(roomId))
+                .data("error", error);
     }
 
     @POST
     @Path("/add")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    @Transactional
     public Response add(@FormParam("roomId") Long roomId,
                         @FormParam("startDate") String startDateStr,
                         @FormParam("endDate") String endDateStr) {
+        try {
+            LocalDateTime start = LocalDateTime.parse(startDateStr);
+            LocalDateTime end = LocalDateTime.parse(endDateStr);
+            String username = identity.getPrincipal().getName();
+            reservationService.addReservation(roomId, username, start, end);
 
-        LocalDateTime start = LocalDateTime.parse(startDateStr);
-        LocalDateTime end = LocalDateTime.parse(endDateStr);
+            return Response.seeOther(URI.create("/reservations/" + roomId)).build();
 
-        if (end.isBefore(start)) {
-            throw new IllegalArgumentException("Data końcowa nie może być przed początkową!");
+        } catch (IllegalArgumentException e) {
+            String message = URLEncoder.encode(e.getMessage(), StandardCharsets.UTF_8);
+            return Response.seeOther(URI.create("/reservations/" + roomId + "?error=" + message)).build();
         }
-
-        Room room = Room.findById(roomId);
-        User user = userRepository.findByUsername(identity.getPrincipal().getName());
-
-        Reservation res = new Reservation();
-        res.room = room;
-        res.inputUser = user;
-        res.inputDate = LocalDateTime.now();
-        res.startDate = start;
-        res.endDate = end;
-
-        res.persist();
-
-        return Response.seeOther(URI.create("/reservations/" + roomId)).build();
     }
 
     @POST
     @Path("/delete/{id}")
-    @Transactional
     public Response delete(@PathParam("id") Long id) {
-        Reservation res = Reservation.findById(id);
-        if (res == null) {
-            return Response.status(Response.Status.NOT_FOUND).build();
-        }
-
-        String currentUser = identity.getPrincipal().getName();
-        boolean isAdmin = identity.hasRole("admin");
-        boolean isOwner = res.inputUser.username.equals(currentUser);
-
-        if (!isAdmin && !isOwner) {
-            return Response.status(Response.Status.FORBIDDEN).entity("Brak uprawnień do usunięcia tej rezerwacji").build();
-        }
-
+        var res = Reservation.<Reservation>findById(id);
+        if (res == null) return Response.status(Response.Status.NOT_FOUND).build();
         Long roomId = res.room.id;
 
-        res.delete();
+        try {
+            reservationService.deleteReservation(
+                    id,
+                    identity.getPrincipal().getName(),
+                    identity.hasRole("admin")
+            );
+        } catch (ForbiddenException e) {
+            return Response.status(Response.Status.FORBIDDEN).build();
+        }
 
         return Response.seeOther(URI.create("/reservations/" + roomId)).build();
     }
