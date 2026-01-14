@@ -29,8 +29,4 @@ public class Reservation extends PanacheEntityBase {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "input_user_id", nullable = false)
     public User inputUser;
-
-    public static List<Reservation> listByRoom(Long roomId) {
-        return find("room.id = ?1 ORDER BY startDate ASC", roomId).list();
-    }
 }

@@ -8,6 +8,7 @@ import jakarta.ws.rs.NotFoundException;
 import pl.wsb.entity.Reservation;
 import pl.wsb.entity.Room;
 import pl.wsb.entity.User;
+import pl.wsb.repository.ReservationRepository;
 import pl.wsb.repository.UserRepository;
 
 import java.time.LocalDateTime;
@@ -18,8 +19,11 @@ public class ReservationService {
     @Inject
     UserRepository userRepository;
 
+    @Inject
+    ReservationRepository reservationRepository;
+
     public List<Reservation> getReservationsByRoom(Long roomId) {
-        return Reservation.listByRoom(roomId);
+        return reservationRepository.findUpcomingByRoom(roomId);
     }
 
     @Transactional
