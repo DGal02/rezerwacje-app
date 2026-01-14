@@ -1,0 +1,80 @@
+{#include layout}
+    {#body}
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <div>
+                <h2 style="margin: 0; color: #2c3e50;">Kalendarz: {room.name}</h2>
+                <p style="color: #7f8c8d; margin: 5px 0 0 0;">Pojemność sali: {room.capacity} os.</p>
+            </div>
+            <a href="/rooms" class="btn btn-secondary">← Powrót do listy sal</a>
+        </div>
+
+        <div style="background-color: #ecf0f1; padding: 20px; border-radius: 8px; margin-bottom: 30px; border: 1px solid #bdc3c7;">
+            <h3 style="margin-top: 0; font-size: 16px;">Zarezerwuj termin</h3>
+
+            <form action="/reservations/add" method="POST" style="display: flex; gap: 15px; align-items: flex-end;">
+                <input type="hidden" name="roomId" value="{room.id}">
+
+                <div style="flex: 1;">
+                    <label style="font-size: 13px;">Początek</label>
+                    <input type="datetime-local" name="startDate" required>
+                </div>
+
+                <div style="flex: 1;">
+                    <label style="font-size: 13px;">Koniec</label>
+                    <input type="datetime-local" name="endDate" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="height: 42px;">Zarezerwuj</button>
+            </form>
+        </div>
+
+        <h3 style="border-bottom: 2px solid #ddd; padding-bottom: 10px;">Nadchodzące rezerwacje</h3>
+
+        {#if reservations.size == 0}
+            <p style="color: #95a5a6; font-style: italic;">Brak rezerwacji dla tej sali. Bądź pierwszy!</p>
+        {#else}
+            <table style="width: 100%; border-collapse: separate; border-spacing: 0 10px;">
+                <thead>
+                <tr style="text-align: left; color: #7f8c8d; font-size: 14px;">
+                    <th>Kto rezerwuje</th>
+                    <th>Od kiedy</th>
+                    <th>Do kiedy</th>
+                    <th>Akcje</th>
+                </tr>
+                </thead>
+                <tbody>
+                {#for res in reservations}
+                    <tr style="background: white; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border-radius: 4px;">
+
+                        <td style="padding: 15px; border-radius: 4px 0 0 4px; border-left: 5px solid #3498db;">
+                            <strong>{res.inputUser.username}</strong>
+                            <div style="font-size: 11px; color: #aaa;">Utworzono: {res.inputDate}</div>
+                        </td>
+
+                        <td style="padding: 15px; font-family: monospace; font-size: 14px;">
+                            {res.startDate.toString().replace('T', ' ')}
+                        </td>
+
+                        <td style="padding: 15px; font-family: monospace; font-size: 14px;">
+                            {res.endDate.toString().replace('T', ' ')}
+                        </td>
+
+                        <td style="padding: 15px; border-radius: 0 4px 4px 0;">
+                            {#if inject:currentUser.admin || res.inputUser.username == inject:currentUser.name}
+                                <form action="/reservations/delete/{res.id}" method="POST">
+                                    <button type="submit" class="btn btn-danger" style="font-size: 12px; padding: 5px 10px;">Odwołaj</button>
+                                </form>
+                            {#else}
+                                <span style="color: #bdc3c7; font-size: 12px;">Brak uprawnień</span>
+                            {/if}
+                        </td>
+
+                    </tr>
+                {/for}
+                </tbody>
+            </table>
+        {/if}
+
+    {/body}
+{/include}
