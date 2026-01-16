@@ -1,0 +1,41 @@
+{#include layout.html}
+    {#title}Dodaj Użytkownika{/title}
+
+    {#body}
+        <div style="max-width: 500px; margin: 0 auto;">
+            <h2 style="border-bottom: 2px solid #f1c40f; padding-bottom: 10px;">👤 Panel Admina: Nowy Użytkownik</h2>
+
+            {#if error}
+                <div style="background-color: #f8d7da; color: #721c24; padding: 15px; border-radius: 4px; margin-bottom: 20px; border: 1px solid #f5c6cb;">
+                    {error}
+                </div>
+            {/if}
+
+            <form action="/admin/users/save" method="POST" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+
+                <div class="form-group">
+                    <label for="username">Login:</label>
+                    <input type="text" id="username" name="username" required placeholder="np. jan_kowalski">
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Hasło:</label>
+                    <input type="password" id="password" name="password" required placeholder="Wpisz silne hasło">
+                </div>
+
+                <div class="form-group">
+                    <label for="role">Rola:</label>
+                    <select id="role" name="role" style="width: 100%; padding: 10px; border: 1px solid #bdc3c7; border-radius: 4px; background-color: white;">
+                        <option value="user">Użytkownik</option>
+                        <option value="admin">Administrator</option>
+                    </select>
+                </div>
+
+                <div style="margin-top: 25px; display: flex; gap: 10px;">
+                    <button type="submit" class="btn btn-primary" style="flex: 1;">Utwórz konto</button>
+                    <a href="/rooms" class="btn btn-secondary">Anuluj</a>
+                </div>
+            </form>
+        </div>
+    {/body}
+{/include}

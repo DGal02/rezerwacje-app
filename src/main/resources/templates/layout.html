@@ -66,7 +66,10 @@
     <div class="nav-left">
         <a href="/rooms" class="brand">System Sal</a>
         {#if inject:currentUser.admin}
-            <a href="/rooms/new" class="nav-link">Dodaj Salę</a>
+            <div style="display: flex; gap: 10px; margin-left: 20px; padding-left: 20px; border-left: 1px solid #576c81;">
+                <a href="/rooms/new" class="nav-link">Dodaj Salę</a>
+                <a href="/admin/users/new" class="nav-link" style="color: #f1c40f; font-weight: bold;">Dodaj Usera</a>
+            </div>
         {/if}
     </div>
 
