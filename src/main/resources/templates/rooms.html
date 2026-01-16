@@ -3,7 +3,9 @@
 
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
             <h2 style="margin: 0; color: #2c3e50;">Dostępne Sale</h2>
-            <a href="/rooms/new" class="btn btn-primary">+ Dodaj nową salę</a>
+            {#if inject:currentUser.admin}
+                <a href="/rooms/new" class="btn btn-primary">+ Dodaj nową salę</a>
+            {/if}
         </div>
 
         <table>
@@ -29,9 +31,11 @@
                                 Kalendarz
                             </a>
 
-                            <a href="/rooms/edit/{room.id}" class="btn btn-primary btn-sm">
-                                Edytuj
-                            </a>
+                            {#if inject:currentUser.admin}
+                                <a href="/rooms/edit/{room.id}" class="btn btn-primary btn-sm">
+                                    Edytuj
+                                </a>
+                            {/if}
 
                             {#if inject:currentUser.admin}
                                 <form action="/rooms/delete/{room.id}" method="POST" style="margin: 0;">
