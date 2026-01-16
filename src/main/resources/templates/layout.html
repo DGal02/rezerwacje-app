@@ -74,7 +74,12 @@
     </div>
 
     <div class="nav-right">
-        <span class="user-info">Zalogowany jako: <span class="user-name">{inject:currentUser.name}</span></span>
+        <span class="user-info">
+            Zalogowany:
+            <a href="/profile/password" class="user-name" style="text-decoration: underline; cursor: pointer;" title="Zmień hasło">
+                {inject:currentUser.name}
+            </a>
+        </span>
         <a href="/logout" class="btn-logout">Wyloguj</a>
     </div>
 </nav>
