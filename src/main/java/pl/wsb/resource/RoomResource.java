@@ -85,12 +85,6 @@ public class RoomResource {
         }
     }
 
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getAllJson() {
-        return Response.ok(roomService.getAllRooms()).build();
-    }
-
     @POST
     @Path("/delete/{id}")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
