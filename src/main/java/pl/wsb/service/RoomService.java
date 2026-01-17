@@ -6,6 +6,7 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import org.jboss.logging.Logger;
 import pl.wsb.entity.Room;
+import pl.wsb.repository.ReservationRepository;
 
 import java.util.List;
 
@@ -14,6 +15,9 @@ public class RoomService {
 
     @Inject
     Logger log;
+
+    @Inject
+    ReservationRepository reservationRepository;
 
     public List<Room> getAllRooms() {
         return Room.listAll();
@@ -32,6 +36,11 @@ public class RoomService {
 
     @Transactional
     public void deleteRoom(Long id) {
+        long count = reservationRepository.count("room.id", id);
+        if (count > 0) {
+            throw new IllegalArgumentException("Nie można usunąć sali, która ma aktywne rezerwacje w ilości: (" + count + "). Usuń je najpierw.");
+        }
+
         boolean deleted = Room.deleteById(id);
         if (deleted) {
             log.infof("Usunięto salę o ID: %d", id);

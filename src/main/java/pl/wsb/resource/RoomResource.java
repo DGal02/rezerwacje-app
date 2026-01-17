@@ -15,6 +15,8 @@ import pl.wsb.repository.UserRepository;
 import pl.wsb.service.RoomService;
 
 import java.net.URI;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 @Path("/rooms")
 @Authenticated
@@ -30,8 +32,10 @@ public class RoomResource {
     @GET
     @Produces(MediaType.TEXT_HTML)
     @Operation(hidden = true)
-    public TemplateInstance getAllRoomsHtml() {
-        return rooms.data("rooms", roomService.getAllRooms());
+    public TemplateInstance getAllRoomsHtml(@QueryParam("error") String error) {
+        return rooms
+                .data("rooms", roomService.getAllRooms())
+                .data("error", error);
     }
 
     @GET
@@ -104,7 +108,13 @@ public class RoomResource {
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Operation(hidden = true)
     public Response delete(@PathParam("id") Long id) {
-        roomService.deleteRoom(id);
-        return Response.seeOther(URI.create("/rooms")).build();
+        try {
+            roomService.deleteRoom(id);
+            return Response.seeOther(URI.create("/rooms")).build();
+        } catch (IllegalArgumentException e) {
+            String encodedError = URLEncoder.encode(e.getMessage(), StandardCharsets.UTF_8);
+
+            return Response.seeOther(URI.create("/rooms?error=" + encodedError)).build();
+        }
     }
 }
